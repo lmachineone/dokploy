@@ -381,25 +381,29 @@ export const calculateResources = ({
 };
 
 export const generateConfigContainer = (
-	application: Partial<ApplicationNested>,
+        application: Partial<ApplicationNested>,
 ) => {
-	const {
-		healthCheckSwarm,
-		restartPolicySwarm,
-		placementSwarm,
-		updateConfigSwarm,
-		rollbackConfigSwarm,
-		modeSwarm,
-		labelsSwarm,
-		replicas,
-		mounts,
-		networkSwarm,
-		stopGracePeriodSwarm,
-	} = application;
+        const {
+                healthCheckSwarm,
+                restartPolicySwarm,
+                placementSwarm,
+                updateConfigSwarm,
+                rollbackConfigSwarm,
+                modeSwarm,
+                labelsSwarm,
+                replicas,
+                mounts,
+                networkSwarm,
+                stopGracePeriodSwarm,
+        } = application;
 
-	const haveMounts = mounts && mounts.length > 0;
+        const sanitizedStopGracePeriodSwarm =
+                typeof stopGracePeriodSwarm === "bigint"
+                        ? Number(stopGracePeriodSwarm)
+                        : stopGracePeriodSwarm;
+        const haveMounts = mounts && mounts.length > 0;
 
-	return {
+        return {
 		...(healthCheckSwarm && {
 			HealthCheck: healthCheckSwarm,
 		}),
@@ -445,9 +449,10 @@ export const generateConfigContainer = (
 						Order: "start-first",
 					},
 				}),
-		...(stopGracePeriodSwarm && {
-			StopGracePeriod: stopGracePeriodSwarm,
-		}),
+                ...(sanitizedStopGracePeriodSwarm !== null &&
+                        sanitizedStopGracePeriodSwarm !== undefined && {
+                                StopGracePeriod: sanitizedStopGracePeriodSwarm,
+                        }),
 		...(networkSwarm
 			? {
 					Networks: networkSwarm,

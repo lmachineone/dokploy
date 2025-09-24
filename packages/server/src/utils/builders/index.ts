@@ -191,9 +191,10 @@ export const mechanizeDockerContainer = async (
 				PublishedPort: port.publishedPort,
 			})),
 		},
-		UpdateConfig,
-		...(StopGracePeriod && { StopGracePeriod }),
-	};
+                UpdateConfig,
+                ...(StopGracePeriod !== undefined &&
+                        StopGracePeriod !== null && { StopGracePeriod }),
+        };
 
 	try {
 		const service = docker.getService(appName);

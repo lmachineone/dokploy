@@ -820,6 +820,9 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+      vitest:
+        specifier: ^1.6.1
+        version: 1.6.1(@types/node@18.19.104)
 
 packages:
 
