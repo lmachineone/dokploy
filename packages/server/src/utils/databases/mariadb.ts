@@ -36,16 +36,17 @@ export const buildMariadb = async (mariadb: MariadbNested) => {
 		env ? `\n${env}` : ""
 	}`;
 
-	const {
-		HealthCheck,
-		RestartPolicy,
-		Placement,
-		Labels,
-		Mode,
-		RollbackConfig,
-		UpdateConfig,
-		Networks,
-	} = generateConfigContainer(mariadb);
+        const {
+                HealthCheck,
+                RestartPolicy,
+                Placement,
+                Labels,
+                Mode,
+                RollbackConfig,
+                UpdateConfig,
+                Networks,
+                StopGracePeriod,
+        } = generateConfigContainer(mariadb);
 	const resources = calculateResources({
 		memoryLimit,
 		memoryReservation,
@@ -79,12 +80,13 @@ export const buildMariadb = async (mariadb: MariadbNested) => {
 					: {}),
 				Labels,
 			},
-			Networks,
-			RestartPolicy,
-			Placement,
-			Resources: {
-				...resources,
-			},
+                        Networks,
+                        RestartPolicy,
+                        Placement,
+                        ...(StopGracePeriod && { StopGracePeriod }),
+                        Resources: {
+                                ...resources,
+                        },
 		},
 		Mode,
 		RollbackConfig,

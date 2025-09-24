@@ -82,16 +82,17 @@ ${command ?? "wait $MONGOD_PID"}`;
 		env ? `\n${env}` : ""
 	}`;
 
-	const {
-		HealthCheck,
-		RestartPolicy,
-		Placement,
-		Labels,
-		Mode,
-		RollbackConfig,
-		UpdateConfig,
-		Networks,
-	} = generateConfigContainer(mongo);
+        const {
+                HealthCheck,
+                RestartPolicy,
+                Placement,
+                Labels,
+                Mode,
+                RollbackConfig,
+                UpdateConfig,
+                Networks,
+                StopGracePeriod,
+        } = generateConfigContainer(mongo);
 
 	const resources = calculateResources({
 		memoryLimit,
@@ -132,12 +133,13 @@ ${command ?? "wait $MONGOD_PID"}`;
 						}),
 				Labels,
 			},
-			Networks,
-			RestartPolicy,
-			Placement,
-			Resources: {
-				...resources,
-			},
+                        Networks,
+                        RestartPolicy,
+                        Placement,
+                        ...(StopGracePeriod && { StopGracePeriod }),
+                        Resources: {
+                                ...resources,
+                        },
 		},
 		Mode,
 		RollbackConfig,

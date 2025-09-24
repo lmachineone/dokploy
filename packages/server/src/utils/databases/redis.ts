@@ -33,16 +33,17 @@ export const buildRedis = async (redis: RedisNested) => {
 		env ? `\n${env}` : ""
 	}`;
 
-	const {
-		HealthCheck,
-		RestartPolicy,
-		Placement,
-		Labels,
-		Mode,
-		RollbackConfig,
-		UpdateConfig,
-		Networks,
-	} = generateConfigContainer(redis);
+        const {
+                HealthCheck,
+                RestartPolicy,
+                Placement,
+                Labels,
+                Mode,
+                RollbackConfig,
+                UpdateConfig,
+                Networks,
+                StopGracePeriod,
+        } = generateConfigContainer(redis);
 	const resources = calculateResources({
 		memoryLimit,
 		memoryReservation,
@@ -75,12 +76,13 @@ export const buildRedis = async (redis: RedisNested) => {
 				],
 				Labels,
 			},
-			Networks,
-			RestartPolicy,
-			Placement,
-			Resources: {
-				...resources,
-			},
+                        Networks,
+                        RestartPolicy,
+                        Placement,
+                        ...(StopGracePeriod && { StopGracePeriod }),
+                        Resources: {
+                                ...resources,
+                        },
 		},
 		Mode,
 		RollbackConfig,

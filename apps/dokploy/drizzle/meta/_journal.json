@@ -778,6 +778,13 @@
       "when": 1757088700712,
       "tag": "0110_vengeful_maddog",
       "breakpoints": true
+    },
+    {
+      "idx": 111,
+      "version": "7",
+      "when": 1758314073609,
+      "tag": "0111_clever_husk",
+      "breakpoints": true
     }
   ]
 }

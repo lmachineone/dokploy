@@ -42,16 +42,17 @@ export const buildMysql = async (mysql: MysqlNested) => {
 					env ? `\n${env}` : ""
 				}`;
 
-	const {
-		HealthCheck,
-		RestartPolicy,
-		Placement,
-		Labels,
-		Mode,
-		RollbackConfig,
-		UpdateConfig,
-		Networks,
-	} = generateConfigContainer(mysql);
+        const {
+                HealthCheck,
+                RestartPolicy,
+                Placement,
+                Labels,
+                Mode,
+                RollbackConfig,
+                UpdateConfig,
+                Networks,
+                StopGracePeriod,
+        } = generateConfigContainer(mysql);
 	const resources = calculateResources({
 		memoryLimit,
 		memoryReservation,
@@ -85,12 +86,13 @@ export const buildMysql = async (mysql: MysqlNested) => {
 					: {}),
 				Labels,
 			},
-			Networks,
-			RestartPolicy,
-			Placement,
-			Resources: {
-				...resources,
-			},
+                        Networks,
+                        RestartPolicy,
+                        Placement,
+                        ...(StopGracePeriod && { StopGracePeriod }),
+                        Resources: {
+                                ...resources,
+                        },
 		},
 		Mode,
 		RollbackConfig,
